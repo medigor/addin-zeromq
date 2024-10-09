@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ConfigDumpInfo xmlns="http://v8.1c.ru/8.3/xcf/dumpinfo" xmlns:xen="http://v8.1c.ru/8.3/xcf/enums" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" format="Hierarchical" version="2.16">
+	<ConfigVersions>
+		<Metadata name="CommonModule.Задания" id="df306845-7bfc-4e83-b90c-7f7072255ae4" configVersion="37297526a238e94c9ad3573f28437af800000000"/>
+		<Metadata name="CommonModule.Задания.Module" id="df306845-7bfc-4e83-b90c-7f7072255ae4.0" configVersion="edd20c37142b21408161f6d79b6233cc00000000"/>
+		<Metadata name="Configuration.Конфигурация" id="44a5196c-d784-4a5c-9c27-3cd805481b3a" configVersion="3d7e7155cee51e46960a116927213cd000000000"/>
+		<Metadata name="Configuration.Конфигурация.HomePageWorkArea" id="cebff326-3c16-4c07-b2e8-c6ce153bbd63.8" configVersion="44f092c49a5a5e44ad5086f91e0be71a00000000"/>
+		<Metadata name="DataProcessor.Тесты" id="d083ffe0-9439-4337-8022-d850937d196b" configVersion="ad5c272e2915e345aa67fd314c168d8000000000"/>
+		<Metadata name="DataProcessor.Тесты.Form.Форма" id="db9083be-97a5-450e-a2f8-dd6125f605a2" configVersion="f01c009dd361da4d81b9a004bd0587bb00000000"/>
+		<Metadata name="DataProcessor.Тесты.Form.Форма.Form" id="db9083be-97a5-450e-a2f8-dd6125f605a2.0" configVersion="25ff7ced4f4f0a46b2a6bad188d5ef0d00000000"/>
+		<Metadata name="Language.Русский" id="dcac37f1-90b5-41d2-9270-c93f4fd619a7" configVersion="1a5f22b6952eb248a3cca6052af06abe00000000"/>
+	</ConfigVersions>
+</ConfigDumpInfo>
