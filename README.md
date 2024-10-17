@@ -26,14 +26,17 @@ https://zeromq.org/socket-api/#request-reply-pattern
 
 Методы:
 - `Bind(Endpoint: String)` - привязывает сокет к конечной точке и начинает принимать соединения, Это аналогично методу [zmq_bind](https://libzmq.readthedocs.io/en/latest/zmq_bind.html). 
-- `Recv(timeout: Число): ДвоичныеДанные|Неопределено` - получает данные от клиента с ожиданием, таймаут задается в миллисекундах. Если таймаут вышел, то вернется Неопределено. Это аналогично последовательному вызову методов: [zmq_poll](https://libzmq.readthedocs.io/en/latest/zmq_poll.html) и [zmq_msg_recv](https://libzmq.readthedocs.io/en/latest/zmq_msg_recv.html)
-- `Send(data: ДвоичныеДанные)` - отправляет ответ клиенту, это аналогично [zmq_msg_send](https://libzmq.readthedocs.io/en/latest/zmq_msg_send.html)
+- `Recv(timeout: Число): ДвоичныеДанные|Неопределено` - получает данные от клиента с ожиданием, таймаут задается в миллисекундах. Если таймаут вышел, то вернется Неопределено. Это аналогично последовательному вызову методов: [zmq_poll](https://libzmq.readthedocs.io/en/latest/zmq_poll.html) и [zmq_msg_recv](https://libzmq.readthedocs.io/en/latest/zmq_msg_recv.html).
+- `Send(data: ДвоичныеДанные)` - отправляет ответ клиенту, это аналогично [zmq_msg_send](https://libzmq.readthedocs.io/en/latest/zmq_msg_send.html).
 
 ### ZeroMQ.Req
 Сокет `Req` используется в качестве клиента, после отправки запроса нужно ожидать получения ответа.
 
 Методы:
 - `Connect(Endpoint: String)` - выполняет подключение к конечной точке, после подключения можно отправлять запросы. Это аналогично методу [zmq_connect](https://libzmq.readthedocs.io/en/latest/zmq_connect.html). 
-- `Disconnect(Endpoint: String)` - привязывает сокет к конечной точке и начинает принимать соединения, Это аналогично методу [zmq_disconnect](https://libzmq.readthedocs.io/en/latest/zmq_disconnect.html).
-- `Send(data: ДвоичныеДанные)` - отправляет запрос серверу, это аналогично [zmq_msg_send](https://libzmq.readthedocs.io/en/latest/zmq_msg_send.html)
-- `Recv(timeout: Число): ДвоичныеДанные|Неопределено` - получает ответ от сервера с ожиданием, таймаут задается в миллисекундах. Если таймаут вышел, то вернется Неопределено. Это аналогично последовательному вызову методов: [zmq_poll](https://libzmq.readthedocs.io/en/latest/zmq_poll.html) и [zmq_msg_recv](https://libzmq.readthedocs.io/en/latest/zmq_msg_recv.html)
+- `Disconnect(Endpoint: String)` - выполняет отключение от конечной точки. Это аналогично методу [zmq_disconnect](https://libzmq.readthedocs.io/en/latest/zmq_disconnect.html).
+- `Send(data: ДвоичныеДанные)` - отправляет запрос серверу, это аналогично [zmq_msg_send](https://libzmq.readthedocs.io/en/latest/zmq_msg_send.html).
+- `Recv(timeout: Число): ДвоичныеДанные|Неопределено` - получает ответ от сервера с ожиданием, таймаут задается в миллисекундах. Если таймаут вышел, то вернется Неопределено. Это аналогично последовательному вызову методов: [zmq_poll](https://libzmq.readthedocs.io/en/latest/zmq_poll.html) и [zmq_msg_recv](https://libzmq.readthedocs.io/en/latest/zmq_msg_recv.html).
+
+## Сборка
+См. https://github.com/medigor/rust-build-scripts, но собрать на `Linux` для `Windows` не получится, т.к. крейт [zeromq-src](https://crates.io/crates/zeromq-src) не позволяет.
