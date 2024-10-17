@@ -1,0 +1,9 @@
+[package]
+name = "zmq-sys"
+version = "0.12.1"
+
+[dependencies]
+libc = "0.2.15"
+
+[build-dependencies]
+zeromq-src = { version = "0.3.3" }
