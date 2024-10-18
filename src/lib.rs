@@ -1,5 +1,6 @@
 mod addin_rep;
 mod addin_req;
+mod impl_socket;
 
 use std::{
     ffi::{c_int, c_long, c_void},
@@ -20,14 +21,14 @@ pub static CONTEXT: LazyLock<Context> = LazyLock::new(|| Context::new());
 pub unsafe extern "C" fn GetClassObject(name: *const u16, component: *mut *mut c_void) -> c_long {
     match *name as u8 {
         b'1' => {
-            if let Ok(addin) = addin_rep::Addin::new(CONTEXT.clone()) {
+            if let Ok(addin) = addin_rep::AddinRep::new(CONTEXT.clone()) {
                 create_component(component, addin)
             } else {
                 0
             }
         },
         b'2' => {
-            if let Ok(addin) = addin_req::Addin::new(CONTEXT.clone()) {
+            if let Ok(addin) = addin_req::AddinReq::new(CONTEXT.clone()) {
                 create_component(component, addin)
             } else {
                 0

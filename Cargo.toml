@@ -14,6 +14,7 @@ strip = true
 [dependencies]
 addin1c = "0.4"
 zmq = "0.10"
+smallvec = "*"
 
 [patch.crates-io]
 "zmq-sys" = { path = 'zmq-sys' }

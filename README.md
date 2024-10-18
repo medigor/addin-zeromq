@@ -19,24 +19,30 @@ https://zeromq.org/socket-api/#request-reply-pattern
 
 У всех объектов есть свойство `LastError` типа `Строка`, в нем будет содержаться ошибка в случае исключения при обращении к компоненте.
 
-На данный момент реализовано только 2 объекта: `ZeroMQ.Rep` и `ZeroMQ.Req`
+Компонента позволяет обмениваться сообщениями. Сообщение - это массив байт, в 1С это тип `ДвоичныеДанные`. Также поддерживаются составные (multipart) сообщения, это сообщения, которые состоят из нескольких частей, каждая из которых массив байт.
 
 ### ZeroMQ.Rep
 Сокет `Rep` используется для обработки запросов от клиентов, при получении запроса нужно дать ответ клиенту. Все запросы клиентов выстраиваются в очередь и сервер их обслуживает по очереди.
 
 Методы:
-- `Bind(Endpoint: String)` - привязывает сокет к конечной точке и начинает принимать соединения, Это аналогично методу [zmq_bind](https://libzmq.readthedocs.io/en/latest/zmq_bind.html). 
-- `Recv(timeout: Число): ДвоичныеДанные|Неопределено` - получает данные от клиента с ожиданием, таймаут задается в миллисекундах. Если таймаут вышел, то вернется Неопределено. Это аналогично последовательному вызову методов: [zmq_poll](https://libzmq.readthedocs.io/en/latest/zmq_poll.html) и [zmq_msg_recv](https://libzmq.readthedocs.io/en/latest/zmq_msg_recv.html).
-- `Send(data: ДвоичныеДанные)` - отправляет ответ клиенту, это аналогично [zmq_msg_send](https://libzmq.readthedocs.io/en/latest/zmq_msg_send.html).
+- `Bind(Endpoint: String)` - привязывает сокет к конечной точке и начинает принимать соединения, вызывается метод [zmq_bind](https://libzmq.readthedocs.io/en/latest/zmq_bind.html).
+- `Send(data: ДвоичныеДанные)` - отправляет ответ клиенту, вызывается метод [zmq_msg_send](https://libzmq.readthedocs.io/en/latest/zmq_msg_send.html).
+- `SendMultipart(data: ДвоичныеДанные)` - отправляет часть составного сообщения, при этом последняя часть должна быть отправлена с помощью метода `Send`.
+- `Recv(timeout: Число): ДвоичныеДанные|Неопределено` - получает данные от клиента с ожиданием, таймаут задается в миллисекундах. Если таймаут вышел, то вернется Неопределено. Используется последовательный вызов методов: [zmq_poll](https://libzmq.readthedocs.io/en/latest/zmq_poll.html) и [zmq_msg_recv](https://libzmq.readthedocs.io/en/latest/zmq_msg_recv.html).
+- `RecvMultipart(timeout: Число): Число|Неопределено` - получает составное сообщение от клиента, таймаут задается в миллисекундах. Возвращает количество частей, либо Неопределено, если таймаут вышел. Данные части можно получить с помощью метода `GetPart`.
+- `GetPart(НомерЧасти: Число): ДвоичныеДанные` - получает выбранную часть составного сообщения.
 
 ### ZeroMQ.Req
 Сокет `Req` используется в качестве клиента, после отправки запроса нужно ожидать получения ответа.
 
 Методы:
-- `Connect(Endpoint: String)` - выполняет подключение к конечной точке, после подключения можно отправлять запросы. Это аналогично методу [zmq_connect](https://libzmq.readthedocs.io/en/latest/zmq_connect.html). 
-- `Disconnect(Endpoint: String)` - выполняет отключение от конечной точки. Это аналогично методу [zmq_disconnect](https://libzmq.readthedocs.io/en/latest/zmq_disconnect.html).
-- `Send(data: ДвоичныеДанные)` - отправляет запрос серверу, это аналогично [zmq_msg_send](https://libzmq.readthedocs.io/en/latest/zmq_msg_send.html).
-- `Recv(timeout: Число): ДвоичныеДанные|Неопределено` - получает ответ от сервера с ожиданием, таймаут задается в миллисекундах. Если таймаут вышел, то вернется Неопределено. Это аналогично последовательному вызову методов: [zmq_poll](https://libzmq.readthedocs.io/en/latest/zmq_poll.html) и [zmq_msg_recv](https://libzmq.readthedocs.io/en/latest/zmq_msg_recv.html).
+- `Connect(Endpoint: String)` - выполняет подключение к конечной точке, после подключения можно отправлять запросы. Используется метод [zmq_connect](https://libzmq.readthedocs.io/en/latest/zmq_connect.html). 
+- `Disconnect(Endpoint: String)` - выполняет отключение от конечной точки. Используется метод [zmq_disconnect](https://libzmq.readthedocs.io/en/latest/zmq_disconnect.html).
+- `Send(data: ДвоичныеДанные)` - отправляет запрос серверу, используется метод [zmq_msg_send](https://libzmq.readthedocs.io/en/latest/zmq_msg_send.html).
+- `SendMultipart(data: ДвоичныеДанные)` - отправляет часть составного сообщения, при этом последняя часть должна быть отправлена с помощью метода `Send`.
+- `Recv(timeout: Число): ДвоичныеДанные|Неопределено` - получает ответ от сервера с ожиданием, таймаут задается в миллисекундах. Если таймаут вышел, то вернется Неопределено. Используется последовательный вызов методов: [zmq_poll](https://libzmq.readthedocs.io/en/latest/zmq_poll.html) и [zmq_msg_recv](https://libzmq.readthedocs.io/en/latest/zmq_msg_recv.html).
+- `RecvMultipart(timeout: Число): Число|Неопределено` - получает составное сообщение от сервера, таймаут задается в миллисекундах. Возвращает количество частей, либо Неопределено, если таймаут вышел. Данные части можно получить с помощью метода `GetPart`.
+- `GetPart(НомерЧасти: Число): ДвоичныеДанные` - получает выбранную часть составного сообщения.
 
 ## Сборка
 См. https://github.com/medigor/rust-build-scripts, но собрать на `Linux` для `Windows` не получится, т.к. крейт [zeromq-src](https://crates.io/crates/zeromq-src) не позволяет.

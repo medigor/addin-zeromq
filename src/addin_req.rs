@@ -1,19 +1,24 @@
 use std::error::Error;
 
 use addin1c::{name, AddinResult, MethodInfo, Methods, PropInfo, SimpleAddin, Variant};
-use zmq::{Message, PollEvents, Socket};
+use smallvec::SmallVec;
+use zmq::{Message, Socket};
 
-pub struct Addin {
+use crate::impl_socket;
+
+pub struct AddinReq {
     socket: Socket,
     msg: Message,
+    parts: SmallVec<[Message; 4]>,
     last_error: Option<Box<dyn Error>>,
 }
 
-impl Addin {
+impl AddinReq {
     pub fn new(context: zmq::Context) -> Result<Self, Box<dyn std::error::Error>> {
         Ok(Self {
             socket: context.socket(zmq::REQ)?,
             msg: Message::new(),
+            parts: SmallVec::new(),
             last_error: None,
         })
     }
@@ -39,25 +44,27 @@ impl Addin {
         Ok(())
     }
     fn recv(&mut self, timeout: &mut Variant, ret_value: &mut Variant) -> AddinResult {
-        let timeout = timeout.get_i32()? as i64;
-        if self.socket.poll(PollEvents::POLLIN, timeout)? != 1 {
-            return Ok(());
-        }
-
-        self.socket.recv(&mut self.msg, zmq::DONTWAIT)?;
-        ret_value.set_blob(&self.msg)?;
-
-        Ok(())
+        impl_socket::recv(&self.socket, timeout, &mut self.msg, ret_value)
     }
 
     fn send(&mut self, data: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
-        let data = data.get_blob()?;
-        self.socket.send(data, 0)?;
-        Ok(())
+        impl_socket::send(&self.socket, data)
+    }
+
+    fn send_part(&mut self, data: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
+        impl_socket::send_part(&self.socket, data)
+    }
+
+    fn recv_multipart(&mut self, timeout: &mut Variant, ret_value: &mut Variant) -> AddinResult {
+        impl_socket::recv_multipart(&self.socket, &mut self.parts, timeout, ret_value)
+    }
+
+    fn get_part(&mut self, part: &mut Variant, ret_value: &mut Variant) -> AddinResult {
+        impl_socket::get_part(&mut self.parts, part, ret_value)
     }
 }
 
-impl SimpleAddin for Addin {
+impl SimpleAddin for AddinReq {
     fn name() -> &'static [u16] {
         name!("ZeroMQ.Req")
     }
@@ -83,6 +90,18 @@ impl SimpleAddin for Addin {
             MethodInfo {
                 name: name!("Send"),
                 method: Methods::Method1(Self::send),
+            },
+            MethodInfo {
+                name: name!("SendPart"),
+                method: Methods::Method1(Self::send_part),
+            },
+            MethodInfo {
+                name: name!("RecvMultipart"),
+                method: Methods::Method1(Self::recv_multipart),
+            },
+            MethodInfo {
+                name: name!("GetPart"),
+                method: Methods::Method1(Self::get_part),
             },
         ]
     }
