@@ -1,24 +1,16 @@
+use crate::impl_socket;
+use addin1c::{name, AddinResult, MethodInfo, Methods, PropInfo, SimpleAddin, Variant};
 use std::error::Error;
 
-use addin1c::{name, AddinResult, MethodInfo, Methods, PropInfo, SimpleAddin, Variant};
-use smallvec::SmallVec;
-use zmq::{Message, Socket};
-
-use crate::impl_socket;
-
 pub struct AddinRep {
-    socket: Socket,
-    msg: Message,
-    parts: SmallVec<[Message; 4]>,
+    client: impl_socket::Client,
     last_error: Option<Box<dyn Error>>,
 }
 
 impl AddinRep {
-    pub fn new(context: zmq::Context) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
         Ok(Self {
-            socket: context.socket(zmq::REP)?,
-            msg: Message::new(),
-            parts: SmallVec::new(),
+            client: impl_socket::Client::new(zmq::REP)?,
             last_error: None,
         })
     }
@@ -33,29 +25,27 @@ impl AddinRep {
     }
 
     fn bind(&mut self, endpoint: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
-        let endpoint = endpoint.get_string()?;
-        self.socket.bind(&endpoint)?;
-        Ok(())
+        self.client.bind(endpoint)
     }
 
     fn recv(&mut self, timeout: &mut Variant, ret_value: &mut Variant) -> AddinResult {
-        impl_socket::recv(&self.socket, timeout, &mut self.msg, ret_value)
+        self.client.recv(timeout, ret_value)
     }
 
     fn send(&mut self, data: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
-        impl_socket::send(&self.socket, data)
+        self.client.send(data)
     }
 
     fn send_part(&mut self, data: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
-        impl_socket::send_part(&self.socket, data)
+        self.client.send_part(data)
     }
 
     fn recv_multipart(&mut self, timeout: &mut Variant, ret_value: &mut Variant) -> AddinResult {
-        impl_socket::recv_multipart(&self.socket, &mut self.parts, timeout, ret_value)
+        self.client.recv_multipart(timeout, ret_value)
     }
 
     fn get_part(&mut self, part: &mut Variant, ret_value: &mut Variant) -> AddinResult {
-        impl_socket::get_part(&mut self.parts, part, ret_value)
+        self.client.get_part(part, ret_value)
     }
 }
 
