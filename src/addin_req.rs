@@ -1,16 +1,16 @@
-use crate::impl_socket;
+use crate::client;
 use addin1c::{name, AddinResult, MethodInfo, Methods, PropInfo, SimpleAddin, Variant};
 use std::error::Error;
 
 pub struct AddinReq {
-    client: impl_socket::Client,
+    client: client::Client,
     last_error: Option<Box<dyn Error>>,
 }
 
 impl AddinReq {
     pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
         Ok(Self {
-            client: impl_socket::Client::new(zmq::REQ)?,
+            client: client::Client::new(zmq::REQ)?,
             last_error: None,
         })
     }

@@ -5,14 +5,30 @@
 	<ChildItems>
 		<InputField name="ИмяФайла" id="1">
 			<DataPath>ИмяФайла</DataPath>
+			<AutoMaxWidth>false</AutoMaxWidth>
 			<ExtendedEditMultipleValues>true</ExtendedEditMultipleValues>
 			<ContextMenu name="ИмяФайлаКонтекстноеМеню" id="2"/>
 			<ExtendedTooltip name="ИмяФайлаРасширеннаяПодсказка" id="3"/>
 		</InputField>
-		<Button name="Тест1" id="4">
+		<Button name="ТестReqRep" id="4">
 			<Type>UsualButton</Type>
-			<CommandName>Form.Command.Тест1</CommandName>
-			<ExtendedTooltip name="Тест1РасширеннаяПодсказка" id="5"/>
+			<CommandName>Form.Command.ТестReqRep</CommandName>
+			<ExtendedTooltip name="ТестReqRepРасширеннаяПодсказка" id="5"/>
+		</Button>
+		<Button name="ТестReqRepMultipart" id="10">
+			<Type>UsualButton</Type>
+			<CommandName>Form.Command.ТестReqRepMultipart</CommandName>
+			<ExtendedTooltip name="ТестReqRepMultipartРасширеннаяПодсказка" id="11"/>
+		</Button>
+		<Button name="ТестPubSub" id="6">
+			<Type>UsualButton</Type>
+			<CommandName>Form.Command.ТестPubSub</CommandName>
+			<ExtendedTooltip name="ТестPubSubРасширеннаяПодсказка" id="7"/>
+		</Button>
+		<Button name="ТестInfo" id="8">
+			<Type>UsualButton</Type>
+			<CommandName>Form.Command.ТестInfo</CommandName>
+			<ExtendedTooltip name="ТестInfoРасширеннаяПодсказка" id="9"/>
 		</Button>
 	</ChildItems>
 	<Attributes>
@@ -42,20 +58,66 @@
 		</Attribute>
 	</Attributes>
 	<Commands>
-		<Command name="Тест1" id="1">
+		<Command name="ТестReqRep" id="1">
 			<Title>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Тест1</v8:content>
+					<v8:content>Тест Req/Rep</v8:content>
 				</v8:item>
 			</Title>
 			<ToolTip>
 				<v8:item>
 					<v8:lang>ru</v8:lang>
-					<v8:content>Тест1</v8:content>
+					<v8:content>Тест req rep</v8:content>
 				</v8:item>
 			</ToolTip>
-			<Action>Тест1</Action>
+			<Action>ТестReqRep</Action>
+		</Command>
+		<Command name="ТестPubSub" id="2">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Тест Pub/Sub</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Тест pub sub</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ТестPubSub</Action>
+		</Command>
+		<Command name="ТестInfo" id="3">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Тест Info</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Тест info</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ТестInfo</Action>
+		</Command>
+		<Command name="Команда1" id="4"/>
+		<Command name="ТестReqRepMultipart" id="5">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Тест Req/Rep Multipart</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Тест req rep</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ТестReqRepMultipart</Action>
 		</Command>
 	</Commands>
 </Form>

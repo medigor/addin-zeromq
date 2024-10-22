@@ -1,7 +1,9 @@
 mod addin_info;
 mod addin_rep;
 mod addin_req;
-mod impl_socket;
+mod addin_pub;
+mod addin_sub;
+mod client;
 
 use std::{
     ffi::{c_int, c_long, c_void},
@@ -33,6 +35,20 @@ pub unsafe extern "C" fn GetClassObject(name: *const u16, component: *mut *mut c
             }
         }
         b'3' => {
+            if let Ok(addin) = addin_pub::AddinPub::new() {
+                create_component(component, addin)
+            } else {
+                0
+            }
+        }
+        b'4' => {
+            if let Ok(addin) = addin_sub::AddinSub::new() {
+                create_component(component, addin)
+            } else {
+                0
+            }
+        }
+        b'5' => {
             let addin = addin_info::AddinInfo::new();
             create_component(component, addin)
         }
@@ -51,7 +67,7 @@ pub unsafe extern "C" fn DestroyObject(component: *mut *mut c_void) -> c_long {
 #[allow(non_snake_case)]
 #[no_mangle]
 pub extern "C" fn GetClassNames() -> *const u16 {
-    name!("1|2|3").as_ptr()
+    name!("1|2|3|4|5").as_ptr()
 }
 
 #[allow(non_snake_case)]

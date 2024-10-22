@@ -60,6 +60,13 @@ impl Client {
         Ok(())
     }
 
+    pub fn unbind(&mut self, endpoint: &mut Variant) -> AddinResult {
+        let endpoint = endpoint.get_string()?;
+        let socket = self.get_or_create_socket()?;
+        socket.unbind(&endpoint)?;
+        Ok(())
+    }
+
     pub fn connect(&mut self, endpoint: &mut Variant) -> AddinResult {
         let endpoint = endpoint.get_string()?;
         let socket = self.get_or_create_socket()?;
@@ -136,6 +143,13 @@ impl Client {
             return Err("Part does not exist".into());
         }
         ret_value.set_blob(&self.parts[part])?;
+        Ok(())
+    }
+
+    pub fn subscribe(&mut self, data: &mut Variant) -> AddinResult {
+        let data = data.get_blob()?;
+        let socket = self.get_or_create_socket()?;
+        socket.set_subscribe(data)?;
         Ok(())
     }
 }

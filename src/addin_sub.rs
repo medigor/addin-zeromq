@@ -2,15 +2,15 @@ use crate::client;
 use addin1c::{name, AddinResult, MethodInfo, Methods, PropInfo, SimpleAddin, Variant};
 use std::error::Error;
 
-pub struct AddinRep {
+pub struct AddinSub {
     client: client::Client,
     last_error: Option<Box<dyn Error>>,
 }
 
-impl AddinRep {
+impl AddinSub {
     pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
         Ok(Self {
-            client: client::Client::new(zmq::REP)?,
+            client: client::Client::new(zmq::SUB)?,
             last_error: None,
         })
     }
@@ -32,16 +32,16 @@ impl AddinRep {
         self.client.unbind(endpoint)
     }
 
+    fn connect(&mut self, endpoint: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
+        self.client.connect(endpoint)
+    }
+
+    fn disconnect(&mut self, endpoint: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
+        self.client.disconnect(endpoint)
+    }
+
     fn recv(&mut self, timeout: &mut Variant, ret_value: &mut Variant) -> AddinResult {
         self.client.recv(timeout, ret_value)
-    }
-
-    fn send(&mut self, data: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
-        self.client.send(data)
-    }
-
-    fn send_part(&mut self, data: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
-        self.client.send_part(data)
     }
 
     fn recv_multipart(&mut self, timeout: &mut Variant, ret_value: &mut Variant) -> AddinResult {
@@ -51,11 +51,15 @@ impl AddinRep {
     fn get_part(&mut self, part: &mut Variant, ret_value: &mut Variant) -> AddinResult {
         self.client.get_part(part, ret_value)
     }
+
+    fn subscribe(&mut self, data: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
+        self.client.subscribe(data)
+    }
 }
 
-impl SimpleAddin for AddinRep {
+impl SimpleAddin for AddinSub {
     fn name() -> &'static [u16] {
-        name!("ZeroMQ.Rep")
+        name!("ZeroMQ.Sub")
     }
 
     fn save_error(&mut self, err: Option<Box<dyn Error>>) {
@@ -73,16 +77,16 @@ impl SimpleAddin for AddinRep {
                 method: Methods::Method1(Self::unbind),
             },
             MethodInfo {
+                name: name!("Connect"),
+                method: Methods::Method1(Self::connect),
+            },
+            MethodInfo {
+                name: name!("Disconnect"),
+                method: Methods::Method1(Self::disconnect),
+            },
+            MethodInfo {
                 name: name!("Recv"),
                 method: Methods::Method1(Self::recv),
-            },
-            MethodInfo {
-                name: name!("Send"),
-                method: Methods::Method1(Self::send),
-            },
-            MethodInfo {
-                name: name!("SendPart"),
-                method: Methods::Method1(Self::send_part),
             },
             MethodInfo {
                 name: name!("RecvMultipart"),
@@ -91,6 +95,10 @@ impl SimpleAddin for AddinRep {
             MethodInfo {
                 name: name!("GetPart"),
                 method: Methods::Method1(Self::get_part),
+            },
+            MethodInfo {
+                name: name!("Subscribe"),
+                method: Methods::Method1(Self::subscribe),
             },
         ]
     }
