@@ -25,6 +25,11 @@
 			<CommandName>Form.Command.ТестPubSub</CommandName>
 			<ExtendedTooltip name="ТестPubSubРасширеннаяПодсказка" id="7"/>
 		</Button>
+		<Button name="ТестPushPull" id="12">
+			<Type>UsualButton</Type>
+			<CommandName>Form.Command.ТестPushPull</CommandName>
+			<ExtendedTooltip name="ТестPushPullРасширеннаяПодсказка" id="13"/>
+		</Button>
 		<Button name="ТестInfo" id="8">
 			<Type>UsualButton</Type>
 			<CommandName>Form.Command.ТестInfo</CommandName>
@@ -103,7 +108,6 @@
 			</ToolTip>
 			<Action>ТестInfo</Action>
 		</Command>
-		<Command name="Команда1" id="4"/>
 		<Command name="ТестReqRepMultipart" id="5">
 			<Title>
 				<v8:item>
@@ -118,6 +122,21 @@
 				</v8:item>
 			</ToolTip>
 			<Action>ТестReqRepMultipart</Action>
+		</Command>
+		<Command name="ТестPushPull" id="4">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Тест Push/Pull</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Тест push pull</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ТестPushPull</Action>
 		</Command>
 	</Commands>
 </Form>

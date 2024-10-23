@@ -62,7 +62,7 @@ impl Client {
 
     pub fn unbind(&mut self, endpoint: &mut Variant) -> AddinResult {
         let endpoint = endpoint.get_string()?;
-        let socket = self.get_or_create_socket()?;
+        let socket = get_socket(self.socket.as_ref())?;
         socket.unbind(&endpoint)?;
         Ok(())
     }
@@ -148,7 +148,7 @@ impl Client {
 
     pub fn subscribe(&mut self, data: &mut Variant) -> AddinResult {
         let data = data.get_blob()?;
-        let socket = self.get_or_create_socket()?;
+        let socket = get_socket(self.socket.as_ref())?;
         socket.set_subscribe(data)?;
         Ok(())
     }

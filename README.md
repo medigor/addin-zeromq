@@ -3,8 +3,9 @@
 Внешняя компонента основанная на [ZeroMQ](https://zeromq.org/)
 
 Реализованы паттерны:
-- [Request-Reply](https://zeromq.org/socket-api/#request-reply-pattern) - представлен объектами `ZeroMQ.Req` и `ZeroMQ.Rep`.
-- [Publish-Subscribe](https://zeromq.org/socket-api/#publish-subscribe-pattern) - представлен объектами `ZeroMQ.Pub` и `ZeroMQ.Sub`.
+- [Request-Reply](https://zeromq.org/socket-api/#request-reply-pattern) - это простой клиент-сервер, представлен объектами `ZeroMQ.Req` и `ZeroMQ.Rep`.
+- [Publish-Subscribe](https://zeromq.org/socket-api/#publish-subscribe-pattern) - публикация сообщений для всех подписчиков, представлен объектами `ZeroMQ.Pub` и `ZeroMQ.Sub`. Этот паттерн не очень надежен, т.к. нет подтверждения получения, нет информации об подписчках, сообщения отбрасываются при отсутствии соединения.
+- [Pipeline](https://zeromq.org/socket-api/#pipeline-pattern) - это паттерн распределения задач, задачи по очереди получаются все подписчики, представлен объектами `ZeroMQ.Push` и `ZeroMQ.Pull`.
 
 ## Для чего нужна
 1. Для общения между фоновыми заданиями, для эффективной реализации параллельной обработки данных. Предполагается, что задания-воркеры будут получать задания у управляещего задания по мере их выполнения, таким образом реализуется более точное распределение задач между фоновыми заданиями.
@@ -75,6 +76,32 @@
 - `Recv(timeout: Число): ДвоичныеДанные|Неопределено` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
 - `RecvMultipart(timeout: Число): Число|Неопределено` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
 - `GetPart(НомерЧасти: Число): ДвоичныеДанные` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
+
+
+### ZeroMQ.Push
+Публикует сообщения одному или нескольким `ZeroMQ.Pull`.
+
+Методы:
+- `Bind(Endpoint: String)` - описание см. в объекте `ZeroMQ.Rep`.
+- `Unbind(Endpoint: String)` - описание см. в объекте `ZeroMQ.Rep`.
+- `Connect(Endpoint: String)` - описание см. в объекте `ZeroMQ.Req`.
+- `Disconnect(Endpoint: String)` - описание см. в объекте `ZeroMQ.Req`.
+- `Send(data: ДвоичныеДанные)` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
+- `SendPart(data: ДвоичныеДанные)` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
+
+
+### ZeroMQ.Pull
+Получает сообщения от `ZeroMQ.Push`.
+
+Методы:
+- `Bind(Endpoint: String)` - описание см. в объекте `ZeroMQ.Rep`.
+- `Unbind(Endpoint: String)` - описание см. в объекте `ZeroMQ.Rep`.
+- `Connect(Endpoint: String)` - описание см. в объекте `ZeroMQ.Req`.
+- `Disconnect(Endpoint: String)` - описание см. в объекте `ZeroMQ.Req`.
+- `Recv(timeout: Число): ДвоичныеДанные|Неопределено` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
+- `RecvMultipart(timeout: Число): Число|Неопределено` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
+- `GetPart(НомерЧасти: Число): ДвоичныеДанные` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
+
 
 ### ZeroMQ.Info
 Информация о компоненте
