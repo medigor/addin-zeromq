@@ -4,13 +4,11 @@ use addin1c::{AddinResult, Variant};
 use smallvec::SmallVec;
 use zmq::{Context, Message, PollEvents, Socket, SocketType, SNDMORE};
 
-#[allow(dead_code)]
 struct State {
     count: u32,
     context: Option<Context>,
 }
 
-#[allow(dead_code)]
 static STATE: Mutex<State> = Mutex::new(State {
     count: 0,
     context: None,
@@ -157,7 +155,7 @@ impl Client {
 impl Drop for Client {
     fn drop(&mut self) {
         if let Ok(mut state) = STATE.lock() {
-            if state.context.is_some() {
+            if self.socket.is_some() {
                 state.count -= 1;
                 if state.count == 0 {
                     state.context = None;
