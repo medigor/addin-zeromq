@@ -14,9 +14,9 @@ dependencies = [
 
 [[package]]
 name = "addin1c"
-version = "0.4.0"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "910d8107f1df0be71d3df9b29784d5865ba175da3633f35b6394d7f162f9a18d"
+checksum = "be23ec30aac9e74d9b271be713a2a829c8ba5407bc48a31cf9f0c4b1b00ca126"
 dependencies = [
  "smallvec",
  "utf16_lit",
