@@ -42,10 +42,10 @@ impl Client {
 
     fn get_or_create_socket(&mut self) -> Result<&Socket, Box<dyn Error>> {
         if self.socket.is_none() {
-            let mut state = STATE.lock().unwrap();
+            let mut state = STATE.lock()?;
             state.count += 1;
-            let context = state.context.get_or_insert(Context::new());
-            let socket = context.socket(self.socket_type).unwrap();
+            let context = state.context.get_or_insert_with(|| Context::new());
+            let socket = context.socket(self.socket_type)?;
             self.socket = Some(socket);
         }
 
@@ -156,11 +156,13 @@ impl Client {
 
 impl Drop for Client {
     fn drop(&mut self) {
-        let mut state = STATE.lock().unwrap();
-        state.count -= 1;
-
-        if state.count == 0 {
-            state.context = None;
+        if let Ok(mut state) = STATE.lock() {
+            if state.context.is_some() {
+                state.count -= 1;
+                if state.count == 0 {
+                    state.context = None;
+                }
+            }
         }
     }
 }
