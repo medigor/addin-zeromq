@@ -2,7 +2,7 @@ use std::{error::Error, sync::Mutex};
 
 use addin1c::{AddinResult, Variant};
 use smallvec::SmallVec;
-use zmq::{Context, Message, PollEvents, Socket, SocketType, SNDMORE};
+use zmq::{Context, Message, Socket, SocketType, SNDMORE};
 
 struct State {
     count: u32,
@@ -42,8 +42,10 @@ impl Client {
         if self.socket.is_none() {
             let mut state = STATE.lock()?;
             state.count += 1;
-            let context = state.context.get_or_insert_with(|| Context::new());
+            let context = state.context.get_or_insert_with(Context::new);
             let socket = context.socket(self.socket_type)?;
+            socket.set_sndtimeo(60_000)?;
+            socket.set_rcvtimeo(60_000)?;
             self.socket = Some(socket);
         }
 
@@ -79,10 +81,22 @@ impl Client {
         Ok(())
     }
 
-    pub fn send(&mut self, data: &mut Variant) -> AddinResult {
+    // pub fn send(&mut self, data: &mut Variant) -> AddinResult {
+    //     let data = data.get_blob()?;
+    //     let socket = get_socket(self.socket.as_ref())?;
+    //     socket.send(data, 0)?;
+    //     Ok(())
+    // }
+
+    pub fn send(&mut self, data: &mut Variant, ret_value: &mut Variant) -> AddinResult {
         let data = data.get_blob()?;
         let socket = get_socket(self.socket.as_ref())?;
-        socket.send(data, 0)?;
+        // socket.send(data, 0)?;
+        match socket.send(data, 0) {
+            Ok(()) => ret_value.set_bool(true),
+            Err(zmq::Error::EAGAIN) => ret_value.set_bool(false),
+            Err(err) => return Err(err.into()),
+        }
         Ok(())
     }
 
@@ -93,36 +107,32 @@ impl Client {
         Ok(())
     }
 
-    pub fn recv(&mut self, timeout: &mut Variant, ret_value: &mut Variant) -> AddinResult {
-        let timeout = timeout.get_i32()? as i64;
+    pub fn recv(&mut self, ret_value: &mut Variant) -> AddinResult {
         let socket = get_socket(self.socket.as_ref())?;
-        if socket.poll(PollEvents::POLLIN, timeout)? != 1 {
-            return Ok(());
-        }
 
-        socket.recv(&mut self.msg, zmq::DONTWAIT)?;
-        ret_value.set_blob(&self.msg)?;
+        match socket.recv(&mut self.msg, 0) {
+            Ok(()) => ret_value.set_blob(&self.msg)?,
+            Err(zmq::Error::EAGAIN) => (),
+            Err(err) => return Err(err.into()),
+        }
 
         Ok(())
     }
 
-    pub fn recv_multipart(
-        &mut self,
-        timeout: &mut Variant,
-        ret_value: &mut Variant,
-    ) -> AddinResult {
-        let timeout = timeout.get_i32()? as i64;
+    pub fn recv_multipart(&mut self, ret_value: &mut Variant) -> AddinResult {
         let socket = get_socket(self.socket.as_ref())?;
-        if socket.poll(PollEvents::POLLIN, timeout)? != 1 {
-            return Ok(());
-        }
 
         let mut count = 0;
         loop {
             if count + 1 > self.parts.len() {
                 self.parts.push(Message::new());
             }
-            socket.recv(&mut self.parts[count], zmq::DONTWAIT)?;
+            // socket.recv(&mut self.parts[count], zmq::DONTWAIT)?;
+            match socket.recv(&mut self.parts[count], 0) {
+                Ok(()) => (),
+                Err(zmq::Error::EAGAIN) => return Ok(()),
+                Err(err) => return Err(err.into()),
+            }
             count += 1;
             if !socket.get_rcvmore()? {
                 break;
@@ -148,6 +158,20 @@ impl Client {
         let data = data.get_blob()?;
         let socket = get_socket(self.socket.as_ref())?;
         socket.set_subscribe(data)?;
+        Ok(())
+    }
+
+    pub fn set_recv_timeout(&mut self, timeout: &mut Variant) -> AddinResult {
+        let timeout = timeout.get_i32()?;
+        let socket = self.get_or_create_socket()?;
+        socket.set_rcvtimeo(timeout)?;
+        Ok(())
+    }
+
+    pub fn set_send_timeout(&mut self, timeout: &mut Variant) -> AddinResult {
+        let timeout = timeout.get_i32()?;
+        let socket = self.get_or_create_socket()?;
+        socket.set_sndtimeo(timeout)?;
         Ok(())
     }
 }

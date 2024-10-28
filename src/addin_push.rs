@@ -40,12 +40,16 @@ impl AddinPush {
         self.client.disconnect(endpoint)
     }
 
-    fn send(&mut self, data: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
-        self.client.send(data)
+    fn send(&mut self, data: &mut Variant, ret_value: &mut Variant) -> AddinResult {
+        self.client.send(data, ret_value)
     }
 
     fn send_part(&mut self, data: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
         self.client.send_part(data)
+    }
+
+    fn set_send_timeout(&mut self, timeout: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
+        self.client.set_send_timeout(timeout)
     }
 }
 
@@ -83,6 +87,10 @@ impl SimpleAddin for AddinPush {
             MethodInfo {
                 name: name!("SendPart"),
                 method: Methods::Method1(Self::send_part),
+            },
+            MethodInfo {
+                name: name!("SetSendTimeout"),
+                method: Methods::Method1(Self::set_send_timeout),
             },
         ]
     }

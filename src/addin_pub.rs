@@ -40,8 +40,8 @@ impl AddinPub {
         self.client.disconnect(endpoint)
     }
 
-    fn send(&mut self, data: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
-        self.client.send(data)
+    fn send(&mut self, data: &mut Variant, ret_value: &mut Variant) -> AddinResult {
+        self.client.send(data, ret_value)
     }
 
     fn send_part(&mut self, data: &mut Variant, _ret_value: &mut Variant) -> AddinResult {

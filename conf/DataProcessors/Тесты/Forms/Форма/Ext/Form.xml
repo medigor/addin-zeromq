@@ -30,6 +30,11 @@
 			<CommandName>Form.Command.ТестPushPull</CommandName>
 			<ExtendedTooltip name="ТестPushPullРасширеннаяПодсказка" id="13"/>
 		</Button>
+		<Button name="ТестPipeline" id="14">
+			<Type>UsualButton</Type>
+			<CommandName>Form.Command.ТестPipeline</CommandName>
+			<ExtendedTooltip name="ТестPipelineРасширеннаяПодсказка" id="15"/>
+		</Button>
 		<Button name="ТестInfo" id="8">
 			<Type>UsualButton</Type>
 			<CommandName>Form.Command.ТестInfo</CommandName>
@@ -137,6 +142,21 @@
 				</v8:item>
 			</ToolTip>
 			<Action>ТестPushPull</Action>
+		</Command>
+		<Command name="ТестPipeline" id="6">
+			<Title>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Тест Pipeline</v8:content>
+				</v8:item>
+			</Title>
+			<ToolTip>
+				<v8:item>
+					<v8:lang>ru</v8:lang>
+					<v8:content>Тест pipeline</v8:content>
+				</v8:item>
+			</ToolTip>
+			<Action>ТестPipeline</Action>
 		</Command>
 	</Commands>
 </Form>

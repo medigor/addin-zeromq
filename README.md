@@ -34,10 +34,11 @@
 Методы:
 - `Bind(Endpoint: String)` - привязывает сокет к конечной точке и начинает принимать соединения, вызывается метод [zmq_bind](https://libzmq.readthedocs.io/en/latest/zmq_bind.html).
 - `Unbind(Endpoint: String)` - отвязывает ранее привязанную конечную точку. Используется метод [zmq_unbind](https://libzmq.readthedocs.io/en/latest/zmq_unbind.html).
+- `SetRecvTimeout(timeout: Число)` - задает таймаут получения сообщения, если метод не вызывался, то таймаут равен 60 сек, см. также [ZMQ_RCVTIMEO](https://libzmq.readthedocs.io/en/latest/zmq_setsockopt.html#_zmq_rcvtimeo_maximum_time_before_a_recv_operation_returns_with_eagain).
 - `Send(data: ДвоичныеДанные)` - отправляет ответ клиенту, вызывается метод [zmq_msg_send](https://libzmq.readthedocs.io/en/latest/zmq_msg_send.html).
 - `SendPart(data: ДвоичныеДанные)` - отправляет часть составного сообщения, при этом последняя часть должна быть отправлена с помощью метода `Send`.
-- `Recv(timeout: Число): ДвоичныеДанные|Неопределено` - получает данные от клиента с ожиданием, таймаут задается в миллисекундах. Если таймаут вышел, то вернется Неопределено. Используется последовательный вызов методов: [zmq_poll](https://libzmq.readthedocs.io/en/latest/zmq_poll.html) и [zmq_msg_recv](https://libzmq.readthedocs.io/en/latest/zmq_msg_recv.html).
-- `RecvMultipart(timeout: Число): Число|Неопределено` - получает составное сообщение от клиента, таймаут задается в миллисекундах. Возвращает количество частей, либо Неопределено, если таймаут вышел. Данные части можно получить с помощью метода `GetPart`.
+- `Recv(): ДвоичныеДанные|Неопределено` - получает данные от клиента с ожиданием. Если таймаут вышел, то вернется Неопределено. Используется последовательный вызов методов: [zmq_poll](https://libzmq.readthedocs.io/en/latest/zmq_poll.html) и [zmq_msg_recv](https://libzmq.readthedocs.io/en/latest/zmq_msg_recv.html).
+- `RecvMultipart(): Число|Неопределено` - получает составное сообщение от клиента. Возвращает количество частей, либо Неопределено, если таймаут вышел. Данные части можно получить с помощью метода `GetPart`.
 - `GetPart(НомерЧасти: Число): ДвоичныеДанные` - получает выбранную часть составного сообщения.
 
 ### ZeroMQ.Req
@@ -46,10 +47,11 @@
 Методы:
 - `Connect(Endpoint: String)` - выполняет подключение к конечной точке, после подключения можно отправлять запросы. Используется метод [zmq_connect](https://libzmq.readthedocs.io/en/latest/zmq_connect.html). 
 - `Disconnect(Endpoint: String)` - выполняет отключение от конечной точки. Используется метод [zmq_disconnect](https://libzmq.readthedocs.io/en/latest/zmq_disconnect.html).
+- `SetRecvTimeout(timeout: Число)` - задает таймаут получения сообщения, если метод не вызывался, то таймаут равен 60 сек, см. также [ZMQ_RCVTIMEO](https://libzmq.readthedocs.io/en/latest/zmq_setsockopt.html#_zmq_rcvtimeo_maximum_time_before_a_recv_operation_returns_with_eagain).
 - `Send(data: ДвоичныеДанные)` - отправляет запрос серверу, используется метод [zmq_msg_send](https://libzmq.readthedocs.io/en/latest/zmq_msg_send.html).
 - `SendPart(data: ДвоичныеДанные)` - отправляет часть составного сообщения, при этом последняя часть должна быть отправлена с помощью метода `Send`.
-- `Recv(timeout: Число): ДвоичныеДанные|Неопределено` - получает ответ от сервера с ожиданием, таймаут задается в миллисекундах. Если таймаут вышел, то вернется Неопределено. Используется последовательный вызов методов: [zmq_poll](https://libzmq.readthedocs.io/en/latest/zmq_poll.html) и [zmq_msg_recv](https://libzmq.readthedocs.io/en/latest/zmq_msg_recv.html).
-- `RecvMultipart(timeout: Число): Число|Неопределено` - получает составное сообщение от сервера, таймаут задается в миллисекундах. Возвращает количество частей, либо Неопределено, если таймаут вышел. Данные части можно получить с помощью метода `GetPart`.
+- `Recv(): ДвоичныеДанные|Неопределено` - получает ответ от сервера с ожиданием. Если таймаут вышел, то вернется Неопределено. Используется последовательный вызов методов: [zmq_poll](https://libzmq.readthedocs.io/en/latest/zmq_poll.html) и [zmq_msg_recv](https://libzmq.readthedocs.io/en/latest/zmq_msg_recv.html).
+- `RecvMultipart(): Число|Неопределено` - получает составное сообщение от сервера. Возвращает количество частей, либо Неопределено, если таймаут вышел. Данные части можно получить с помощью метода `GetPart`.
 - `GetPart(НомерЧасти: Число): ДвоичныеДанные` - получает выбранную часть составного сообщения.
 
 ### ZeroMQ.Pub
@@ -73,8 +75,9 @@
 - `Connect(Endpoint: String)` - описание см. в объекте `ZeroMQ.Req`.
 - `Disconnect(Endpoint: String)` - описание см. в объекте `ZeroMQ.Req`.
 - `Subscribe(topic: ДвоичныеДанные)` - подписывается на определенный топик, для подписки на все топики можно передать пустой ДвоичныеДанные, см. также  [ZMQ_SUBSCRIBE](https://libzmq.readthedocs.io/en/latest/zmq_setsockopt.html#_zmq_subscribe_establish_message_filter).
-- `Recv(timeout: Число): ДвоичныеДанные|Неопределено` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
-- `RecvMultipart(timeout: Число): Число|Неопределено` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
+- `SetRecvTimeout(timeout: Число)` - описание см. в объекте `ZeroMQ.Req`.
+- `Recv(): ДвоичныеДанные|Неопределено` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
+- `RecvMultipart(): Число|Неопределено` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
 - `GetPart(НомерЧасти: Число): ДвоичныеДанные` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
 
 
@@ -86,7 +89,8 @@
 - `Unbind(Endpoint: String)` - описание см. в объекте `ZeroMQ.Rep`.
 - `Connect(Endpoint: String)` - описание см. в объекте `ZeroMQ.Req`.
 - `Disconnect(Endpoint: String)` - описание см. в объекте `ZeroMQ.Req`.
-- `Send(data: ДвоичныеДанные)` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
+- `SetSendTimeout(timeout: Число)` - задает таймаут отправки сообщения, если метод не вызывался, то таймаут равен 60 сек, см. также [ZMQ_SNDTIMEO](https://libzmq.readthedocs.io/en/latest/zmq_setsockopt.html#_zmq_sndtimeo_maximum_time_before_a_send_operation_returns_with_eagain).
+- `Send(data: ДвоичныеДанные): Булево` - отправляет сообщение в блокирующем режиме, при успешной отправке возвращает `Истина`, если таймаут вышел - `Ложь`, вызывается метод [zmq_msg_send](https://libzmq.readthedocs.io/en/latest/zmq_msg_send.html).
 - `SendPart(data: ДвоичныеДанные)` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
 
 
@@ -98,8 +102,9 @@
 - `Unbind(Endpoint: String)` - описание см. в объекте `ZeroMQ.Rep`.
 - `Connect(Endpoint: String)` - описание см. в объекте `ZeroMQ.Req`.
 - `Disconnect(Endpoint: String)` - описание см. в объекте `ZeroMQ.Req`.
-- `Recv(timeout: Число): ДвоичныеДанные|Неопределено` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
-- `RecvMultipart(timeout: Число): Число|Неопределено` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
+- `SetRecvTimeout(timeout: Число)` - описание см. в объекте `ZeroMQ.Req`.
+- `Recv(): ДвоичныеДанные|Неопределено` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
+- `RecvMultipart(): Число|Неопределено` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
 - `GetPart(НомерЧасти: Число): ДвоичныеДанные` - описание см. в объектах `ZeroMQ.Rep`/`ZeroMQ.Req`.
 
 

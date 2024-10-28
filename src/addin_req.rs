@@ -31,24 +31,28 @@ impl AddinReq {
     fn disconnect(&mut self, endpoint: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
         self.client.disconnect(endpoint)
     }
-    fn recv(&mut self, timeout: &mut Variant, ret_value: &mut Variant) -> AddinResult {
-        self.client.recv(timeout, ret_value)
+    fn recv(&mut self, ret_value: &mut Variant) -> AddinResult {
+        self.client.recv(ret_value)
     }
 
-    fn send(&mut self, data: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
-        self.client.send(data)
+    fn send(&mut self, data: &mut Variant, ret_value: &mut Variant) -> AddinResult {
+        self.client.send(data, ret_value)
     }
 
     fn send_part(&mut self, data: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
         self.client.send_part(data)
     }
 
-    fn recv_multipart(&mut self, timeout: &mut Variant, ret_value: &mut Variant) -> AddinResult {
-        self.client.recv_multipart(timeout, ret_value)
+    fn recv_multipart(&mut self, ret_value: &mut Variant) -> AddinResult {
+        self.client.recv_multipart(ret_value)
     }
 
     fn get_part(&mut self, part: &mut Variant, ret_value: &mut Variant) -> AddinResult {
         self.client.get_part(part, ret_value)
+    }
+
+    fn set_recv_timeout(&mut self, timeout: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
+        self.client.set_recv_timeout(timeout)
     }
 }
 
@@ -73,7 +77,7 @@ impl SimpleAddin for AddinReq {
             },
             MethodInfo {
                 name: name!("Recv"),
-                method: Methods::Method1(Self::recv),
+                method: Methods::Method0(Self::recv),
             },
             MethodInfo {
                 name: name!("Send"),
@@ -85,11 +89,15 @@ impl SimpleAddin for AddinReq {
             },
             MethodInfo {
                 name: name!("RecvMultipart"),
-                method: Methods::Method1(Self::recv_multipart),
+                method: Methods::Method0(Self::recv_multipart),
             },
             MethodInfo {
                 name: name!("GetPart"),
                 method: Methods::Method1(Self::get_part),
+            },
+            MethodInfo {
+                name: name!("SetRecvTimeout"),
+                method: Methods::Method1(Self::set_recv_timeout),
             },
         ]
     }

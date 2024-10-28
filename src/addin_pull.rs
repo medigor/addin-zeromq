@@ -40,12 +40,12 @@ impl AddinPull {
         self.client.disconnect(endpoint)
     }
 
-    fn recv(&mut self, timeout: &mut Variant, ret_value: &mut Variant) -> AddinResult {
-        self.client.recv(timeout, ret_value)
+    fn recv(&mut self, ret_value: &mut Variant) -> AddinResult {
+        self.client.recv(ret_value)
     }
 
-    fn recv_multipart(&mut self, timeout: &mut Variant, ret_value: &mut Variant) -> AddinResult {
-        self.client.recv_multipart(timeout, ret_value)
+    fn recv_multipart(&mut self, ret_value: &mut Variant) -> AddinResult {
+        self.client.recv_multipart(ret_value)
     }
 
     fn get_part(&mut self, part: &mut Variant, ret_value: &mut Variant) -> AddinResult {
@@ -54,6 +54,10 @@ impl AddinPull {
 
     fn subscribe(&mut self, data: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
         self.client.subscribe(data)
+    }
+
+    fn set_recv_timeout(&mut self, timeout: &mut Variant, _ret_value: &mut Variant) -> AddinResult {
+        self.client.set_recv_timeout(timeout)
     }
 }
 
@@ -86,11 +90,11 @@ impl SimpleAddin for AddinPull {
             },
             MethodInfo {
                 name: name!("Recv"),
-                method: Methods::Method1(Self::recv),
+                method: Methods::Method0(Self::recv),
             },
             MethodInfo {
                 name: name!("RecvMultipart"),
-                method: Methods::Method1(Self::recv_multipart),
+                method: Methods::Method0(Self::recv_multipart),
             },
             MethodInfo {
                 name: name!("GetPart"),
@@ -99,6 +103,10 @@ impl SimpleAddin for AddinPull {
             MethodInfo {
                 name: name!("Subscribe"),
                 method: Methods::Method1(Self::subscribe),
+            },
+            MethodInfo {
+                name: name!("SetRecvTimeout"),
+                method: Methods::Method1(Self::set_recv_timeout),
             },
         ]
     }
